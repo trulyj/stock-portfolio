@@ -1,0 +1,158 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+$lavender: #f0e3ff;
+$light-purple: #d89cf6;
+$medium-purple: #916dd5;
+$dark-purple: #3e206d;
+
+/* universal */
+
+body {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  margin: 0 auto;
+  max-width: 67em;
+  padding: 1em 0;
+  background: $light-purple;
+}
+
+section {
+  overflow: auto;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.center {
+  text-align: center;
+}
+
+.center h1 {
+  margin-bottom: 10px;
+}
+
+img {
+  border-radius: 8px;
+  max-width: 90%;
+  height: auto;
+  padding-bottom: 30px;
+}
+
+/*--- navigation bar ---*/
+.navbar {
+  background: $dark-purple;
+}
+.nav-link {
+  margin-right: 1em !important;
+  color: $light-purple;
+  //cursor: pointer;
+}
+
+.nav-item {
+  color: $light-purple;
+  //cursor: pointer;
+}
+
+.nav-item:hover {
+  color: $light-purple;
+}
+//.nav-link {
+//  margin-right: 1em !important;
+//}
+.nav-link:hover {
+  color: $lavender;
+}
+//.navbar-collapse {
+//  justify-content: flex-end;
+//}
+
+
+/* typography */
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1;
+}
+
+h1 {
+  font-size: 2em;
+  letter-spacing: 0px;
+  margin-bottom: 30px;
+  /* text-align: center; */
+}
+
+h2 {
+  font-size: 1.2em;
+  letter-spacing: -1px;
+  margin-bottom: 30px;
+  /* text-align: center; */
+  font-weight: normal;
+  color: $medium-purple;
+}
+
+p {
+  font-size: 1.1em;
+  line-height: 1.7em;
+  margin-bottom: 10px;
+  /* text-align: center; */
+}
+
+li {
+  font-size: 1.1em;
+  line-height: 1.7em;
+  margin-bottom: 10px;
+  /* text-align: center; */
+}
+
+/* unvisited link */
+a:link {
+  color: $dark-purple;
+}
+
+/* visited link */
+a:visited {
+  color: $dark-purple;
+}
+
+/* mouse over link */
+a:hover {
+  color: $lavender;
+}
+
+/* header */
+
+#logo {
+  float: left;
+  margin-right: 10px;
+  font-size: 1.7em;
+  color: $light-purple;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  word-spacing: 4px;
+  padding-top: 9px;
+  font-family: Georgia, serif;
+  font-weight: 600;
+}
+
+#logo:hover {
+  color: $lavender;
+  text-decoration: none;
+}
+
+#nlink {
+  float: left;
+  margin-right: 10px;
+  font-size: 1em;
+  color: $light-purple;
+  //text-transform: uppercase;
+  letter-spacing: 0px;
+  word-spacing: 4px;
+  padding-top: 12px;
+  //font-weight: 300;
+}
+
+#nlink:hover {
+  color: $lavender;
+  text-decoration: none;
+}

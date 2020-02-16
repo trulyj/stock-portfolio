@@ -1,13 +1,11 @@
-<header class="navbar navbar-fixed-top navbar-inverse">
+<nav class="navbar navbar-fixed-top">
   <div class="container">
-    <%= link_to "Stock Portfolio", root_path %>
-    <nav>
-      <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "Home", root_path %></li>
-        <li><%= link_to "Transactions", root_path %></li>
-        <li><%= link_to "Logout", destroy_user_session_path, method: :delete %></li>
-        <li><%= link_to "Login", new_user_session_path, method: :get %></li>
-      </ul>
-    </nav>
+    <%= link_to "Stock Portfolio", root_path, id: "logo" %>
+    <ul class="navbar-nav navbar-right">
+      <a class="nav-link"><%= link_to "Home", root_path, id: "nlink" %></a>
+      <a class="nav-link"><%= link_to "Transactions", root_path, id: "nlink" %></a>
+      <a class="nav-link"><%= link_to "Logout", destroy_user_session_path, method: :delete, id: "nlink" %></a>
+      <a class="nav-link"><%= link_to "Login", new_user_session_path, method: :get, id: "nlink" %></a>
+    </ul>
   </div>
-</header>
+</nav>
