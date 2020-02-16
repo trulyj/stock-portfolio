@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   get 'homepage/index'
 
-  #resources :users
+  resources :stocks
 
   root to: "homepage#index"
   #root 'homepage#index'
