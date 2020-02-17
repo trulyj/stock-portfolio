@@ -5,7 +5,6 @@ class SymbolValidator < ActiveModel::Validator
       puts stk
     rescue Alphavantage::Error => e
       stock.errors[:base] << "Stock symbol is invalid."
-      #puts stock.errors[:base]
     end
   end
 end
