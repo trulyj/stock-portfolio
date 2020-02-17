@@ -9,6 +9,28 @@
 </p>
 
 <p>
-  <strong>Price per Share:</strong>
-  <%= @avinfo.price  %>
+  <strong>Price per Share at Open:</strong>
+  <%= @avinfo.open %>
+</p>
+
+<p>
+  <strong>Current Price per Share:</strong>
+  <% if @avinfo.price > @avinfo.open %>
+    <font color="green"> <%= @avinfo.price %> </font>
+  <% elsif @avinfo.price < @avinfo.open %>
+    <font color="red"> <%= @avinfo.price %> </font>
+  <% else %>
+    <font color="gray"> <%= @avinfo.price %> </font>
+  <% end %>
+</p>
+
+<p>
+  <strong>Current Price per Share:</strong>
+  <% if @avinfo.price > @avinfo.open %>
+    <font color="green"> <%= @totalval %> </font>
+  <% elsif @avinfo.price < @avinfo.open %>
+    <font color="red"> <%= @totalval %> </font>
+  <% else %>
+    <font color="gray"> <%= @totalval %> </font>
+  <% end %>
 </p>
