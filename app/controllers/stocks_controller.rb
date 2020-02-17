@@ -1,6 +1,9 @@
+require 'date'
+
 class StocksController < ApplicationController
   def index
-    @stocks = current_user.stocks
+    redirect_to new_stock_path
+    #@stocks = current_user.stocks
     #@stocks = Stock.all
   end
 
@@ -24,9 +27,10 @@ class StocksController < ApplicationController
     if @stock.save
       #stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
       #stk_quote = stk.quote
-      #@user.balance = @user.balance - stk_quote.price
+      #@user.balance = @user.balance - stk_quote.price*@stock.quantity
       @user.balance = @user.balance - 60
       @user.save
+      @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: 60, time: DateTime.now)
       redirect_to @stock
     else
       render 'new'

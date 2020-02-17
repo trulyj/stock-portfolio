@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type: 
+  symbol: MyString
+  quantity: 1
+  price: 9.99
+  time: 2020-02-17 16:03:50
+
+two:
+  type: 
+  symbol: MyString
+  quantity: 1
+  price: 9.99
+  time: 2020-02-17 16:03:50

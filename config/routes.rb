@@ -6,16 +6,18 @@ Rails.application.routes.draw do
   #  registration: 'register', edit: 'edit/profile'
   #}
 
-  get 'homepage/index'
-
+  root to: "homepage#index"
   resources :stocks
+
+  get 'homepage/index'
+  get 'transactions', to: "static#transactions", as: "transactions"
+  get 'buy', to: "stocks#new", as: "buy"
+
   #resources :users do
   #  member do
   #    get :stocks
   #  end
   #end
-
-  root to: "homepage#index"
   #root 'homepage#index'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

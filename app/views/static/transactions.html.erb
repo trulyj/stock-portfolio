@@ -1,0 +1,13 @@
+<h1>Transaction History</h1>
+
+<table>
+  <% current_user.transactions.each do |transaction| %>
+    <tr>
+      <td><%= transaction.buyorsell %></td>
+      <td><%= transaction.symbol %></td>
+      <td><%= transaction.quantity %></td>
+      <td><%= transaction.price %></td>
+      <td><%= transaction.time %></td>
+    </tr>
+  <% end %>
+</table>
