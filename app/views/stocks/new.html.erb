@@ -1,1 +1,22 @@
 <h1>Buy Stocks</h1>
+<div class="row">
+  <div class="col-12 col-md-8">
+    Portfolio
+  </div>
+  <div class="col-6 col-md-4">
+    Buy Stocks
+    <%= form_with scope: :stock, url: stocks_path, local: true do |form| %>
+    <p>
+      <%= form.label :symbol %><br>
+      <%= form.text_field :symbol %>
+    </p>
+    <p>
+      <%= form.label :quantity %><br>
+      <%= form.number_field :quantity %>
+    </p>
+    <p>
+      <%= form.submit %>
+    </p>
+    <% end %>
+  </div>
+</div>
