@@ -4,7 +4,6 @@
   <tr>
     <th>Symbol</th>
     <th>QTY</th>
-    <th>User</th>
     <th></th>
   </tr>
 
@@ -12,7 +11,6 @@
     <tr>
       <td><%= stock.symbol %></td>
       <td><%= stock.quantity %></td>
-      <td><%= stock.user_id %></td>
       <td><%= link_to 'More Info', stock_path(stock) %></td>
     </tr>
   <% end %>
