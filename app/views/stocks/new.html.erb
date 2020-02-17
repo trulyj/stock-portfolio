@@ -6,6 +6,19 @@
   <div class="col-6 col-md-4">
     Buy Stocks
     <%= form_with scope: :stock, url: stocks_path, local: true do |form| %>
+    <% if @stock.errors.any? %>
+      <div id="error_explanation">
+        <h2>
+          <%= pluralize(@stock.errors.count, "error") %> prohibited
+          this transaction:
+        </h2>
+        <ul>
+          <% @stock.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
     <p>
       <%= form.label :symbol %><br>
       <%= form.text_field :symbol %>
