@@ -22,6 +22,7 @@ class StocksController < ApplicationController
     @user = current_user
     @stock = @user.stocks.new(stock_params)
     if @stock.save
+      #@user.balance = @user.balance - 60
       redirect_to @stock
     else
       render 'new'
