@@ -3,6 +3,21 @@
   <div class="col-12 col-md-8">
     <strong>Portfolio:</strong>
     <%= current_user.stocks.size %>
+    <table>
+      <tr>
+        <th>Symbol</th>
+        <th>QTY</th>
+        <th></th>
+      </tr>
+
+      <% current_user.stocks.each do |stock| %>
+        <tr>
+          <td><%= stock.symbol %></td>
+          <td><%= stock.quantity %></td>
+          <td><%= link_to 'More Info', stock_path(stock) %></td>
+        </tr>
+      <% end %>
+    </table>
   </div>
   <div class="col-6 col-md-4">
     Buy Stocks

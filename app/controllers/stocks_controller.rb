@@ -22,6 +22,9 @@ class StocksController < ApplicationController
     @user = current_user
     @stock = @user.stocks.new(stock_params)
     if @stock.save
+      #stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
+      #stk_quote = stk.quote
+      #@user.balance = @user.balance - stk_quote.price
       @user.balance = @user.balance - 60
       @user.save
       redirect_to @stock
