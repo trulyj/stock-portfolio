@@ -18,6 +18,8 @@ class StocksController < ApplicationController
 
   def show
     @stock = Stock.find(params[:id])
+    av = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
+    @avinfo = av.quote
   end
 
   private
