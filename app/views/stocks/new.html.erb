@@ -1,10 +1,15 @@
 <h1>Buy Stocks</h1>
 <div class="row">
   <div class="col-12 col-md-8">
-    Portfolio
+    <strong>Portfolio:</strong>
+    <%= current_user.stocks.size %>
   </div>
   <div class="col-6 col-md-4">
     Buy Stocks
+    <p>
+      <strong>Balance:</strong>
+      <%= current_user.balance %>
+    </p>
     <%= form_with scope: :stock, url: stocks_path, local: true do |form| %>
     <% if @stock.errors.any? %>
       <div id="error_explanation">

@@ -1,6 +1,7 @@
 class StocksController < ApplicationController
   def index
-    @stocks = Stock.all
+    @stocks = current_user.stocks
+    #@stocks = Stock.all
   end
 
   def show
@@ -18,7 +19,8 @@ class StocksController < ApplicationController
   end
 
   def create
-    @stock = Stock.new(stock_params)
+    @user = current_user
+    @stock = @user.stocks.new(stock_params)
     if @stock.save
       redirect_to @stock
     else

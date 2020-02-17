@@ -9,6 +9,11 @@ Rails.application.routes.draw do
   get 'homepage/index'
 
   resources :stocks
+  #resources :users do
+  #  member do
+  #    get :stocks
+  #  end
+  #end
 
   root to: "homepage#index"
   #root 'homepage#index'
