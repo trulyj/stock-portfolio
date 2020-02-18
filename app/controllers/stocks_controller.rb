@@ -29,6 +29,7 @@ class StocksController < ApplicationController
     @user = current_user
     @stock = @user.stocks.new(stock_params)
     if @stock.save
+      puts "NO"
       stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
       stk_quote = stk.quote
       @user.balance = @user.balance - stk_quote.price*@stock.quantity
@@ -37,6 +38,8 @@ class StocksController < ApplicationController
       @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: 60, time: DateTime.now)
       redirect_to @stock
     else
+      puts "YES"
+      @stock.destroy
       render 'new'
     end
 

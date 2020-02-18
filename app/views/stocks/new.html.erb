@@ -11,11 +11,13 @@
       </tr>
 
       <% current_user.stocks.each do |stock| %>
-        <tr>
-          <td><%= stock.symbol %></td>
-          <td><%= stock.quantity %></td>
-          <td><%= link_to 'More Info', stock_path(stock) %></td>
-        </tr>
+        <% if not stock.errors.any? %>
+          <tr>
+            <td><%= stock.symbol %></td>
+            <td><%= stock.quantity %></td>
+            <td><%= link_to 'More Info', stock_path(stock) %></td>
+          </tr>
+        <% end %>
       <% end %>
     </table>
   </div>
