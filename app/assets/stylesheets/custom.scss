@@ -117,7 +117,7 @@ a:visited {
 
 /* mouse over link */
 a:hover {
-  color: $lavender;
+  color: #000;
 }
 
 /* tables */
@@ -131,8 +131,8 @@ table {
 }
 
 table th {
-  background: $lavender;
-  color: $light-purple;
+  background: $dark-purple;
+  color: $lavender;
   height: 40px;
 }
 
@@ -142,11 +142,15 @@ table th, td {
   border-bottom: 1px solid $dark-purple;
 }
 
+//table tbody tr, td {
+//  background: $lavender;
+//}
+
 table tbody tr:nth-child(2n) td {
-  background: $medium-purple;
+  background: $lavender;
 }
 table tbody tr:nth-child(2n+1) td {
-  background: $light-purple;
+  background: #FFF;
 }
 
 /* header */
