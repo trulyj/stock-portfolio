@@ -9,10 +9,11 @@ class StocksController < ApplicationController
 
   def show
     @stock = Stock.find(params[:id])
-    av = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
-    @avinfo = av.quote
-    @totalval = (@avinfo.price).to_f * (@stock.quantity)
-    puts @avinfo.price
+    #av = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
+    #@avinfo = av.quote
+    #@totalval = (@avinfo.price).to_f * (@stock.quantity)
+    @totalval = (@stock.share_price) * (@stock.quantity)
+    #puts @avinfo.price
     puts @stock.quantity
     puts @totalval
   end
@@ -32,11 +33,11 @@ class StocksController < ApplicationController
     if @stock.save
       stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
       stk_quote = stk.quote
-      @stock.update(share_price: (stk_quote.price).to_f, last_updated: DateTime.now)
+      @stock.update(share_price: (stk_quote.price).to_f, open_price:(stk_quote.open).to_f, last_updated: DateTime.now)
       @user.balance = @user.balance - (stk_quote.price).to_f*@stock.quantity
       #@user.balance = @user.balance - 60
       @user.save
-      @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: 60, time: DateTime.now)
+      @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
       redirect_to @stock
     else
       @existing = Stock.find_by symbol: @stock.symbol, user_id: @user.id
@@ -44,8 +45,10 @@ class StocksController < ApplicationController
       puts @stock.symbol
       puts @existing
       if (@existing != nil)
-        @existing.update(quantity: @existing.quantity + @stock.quantity)
-        @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: 60, time: DateTime.now)
+        stk = Alphavantage::Stock.new symbol: @existing.symbol, key: ENV['AV_KEY']
+        stk_quote = stk.quote
+        @existing.update(quantity: @existing.quantity + @stock.quantity, share_price: (stk_quote.price).to_f, open_price:(stk_quote.open).to_f, last_updated: DateTime.now)
+        @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
         redirect_to @existing
         #@stock.errors.clear
       else
