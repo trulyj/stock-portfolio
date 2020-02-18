@@ -20,6 +20,6 @@ end
 class Stock < ApplicationRecord
   belongs_to :user
   validates :quantity, presence: true, numericality: { greater_than: 0 }
-  validates :symbol, presence: true, uniqueness: { scope: :user, message: "You already bought this stock." }
+  #validates :symbol, presence: true, uniqueness: { scope: :user, message: "You already bought this stock." }
   #validates_with SymbolValidator
 end

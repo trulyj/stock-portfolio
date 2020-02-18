@@ -29,7 +29,17 @@ class StocksController < ApplicationController
   def create
     puts "Enter create"
     @user = current_user
-    @stock = @user.stocks.new(stock_params)
+    @stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
+    initQTY = 0
+    if @stock == nil
+      @stock = @user.stocks.new(stock_params)
+    else
+      initQTY = @stock.quantity
+    end
+    if params[:stock][:quantity] == 0
+      @stock.errors[:base] << "Quantity must be greater than 0."
+      render 'new'
+    end
     begin
       puts "BEGIN"
       stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
@@ -42,38 +52,25 @@ class StocksController < ApplicationController
       puts "PRICE CONVERTED"
       puts av_price
       #p = 60
-      if av_price*@stock.quantity > @stock.user.balance
+      if av_price*(params[:stock][:quantity]).to_i > @user.balance
         @stock.errors[:base] << "You do not have enough money to make this transaction."
-      end
-    rescue Alphavantage::Error => e
-      @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in 5 minutes!"
-    end
-    #@stock = @user.stocks.new(stock_params)
-    #stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
-    if @stock.save
-      @stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
-      @user.balance = @user.balance - av_price.to_f*@stock.quantity
-      #@user.balance = @user.balance - 60
-      @user.save
-      @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
-      redirect_to @stock
-    else
-      @stock.errors.delete(:symbol)
-      @existing = Stock.find_by symbol: @stock.symbol, user_id: @user.id
-      if (@existing != nil and @stock.errors.size == 0)
-        puts av_price
-        @existing.update(quantity: @existing.quantity + @stock.quantity, share_price: av_price, open_price: av_open, last_updated: DateTime.now)
-        @existing.save
-        @user.balance = @user.balance - av_price.to_f*@stock.quantity
+        render 'new'
+      elsif @stock.save
+        @stock.update(quantity: initQTY+(params[:stock][:quantity]).to_i, share_price: av_price, open_price: av_open, last_updated: DateTime.now)
+        #@user.balance = @user.balance - av_price.to_f*@stock.quantity
         #@user.balance = @user.balance - 60
+        #@user.save
+        @user.balance = @user.balance - av_price*@stock.quantity
         @user.save
-        @user.transactions.create(buyorsell: "BUY", symbol: @existing.symbol, quantity: @stock.quantity, price: @existing.share_price, time: DateTime.now)
-        redirect_to @existing
+        @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
+        redirect_to @stock
       else
         render 'new'
       end
+    rescue Alphavantage::Error => e
+        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
+        render 'new'
     end
-
     #stock = Alphavantage::Stock.new symbol: :sym, key: ENV['AV_KEY']
     #stock_quote = stock.quote
     #puts stock_quote.symbol
