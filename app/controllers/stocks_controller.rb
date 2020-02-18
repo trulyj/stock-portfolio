@@ -45,8 +45,11 @@ class StocksController < ApplicationController
       if (@existing != nil)
         puts "REPEAT"
         @existing.update(quantity: @existing.quantity + @stock.quantity)
+        redirect_to @existing
+        #@stock.errors.clear
+      else
+        render 'new'
       end
-      render 'new'
     end
 
     #stock = Alphavantage::Stock.new symbol: :sym, key: ENV['AV_KEY']
