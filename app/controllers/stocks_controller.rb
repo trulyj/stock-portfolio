@@ -62,7 +62,7 @@ class StocksController < ApplicationController
         #@user.save
         @user.balance = @user.balance - av_price*@stock.quantity
         @user.save
-        @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
+        @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: (params[:stock][:quantity]).to_i, price: @stock.share_price, time: DateTime.now)
         redirect_to @stock
       else
         render 'new'
