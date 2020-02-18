@@ -34,3 +34,5 @@
     <font color="gray"> <%= @totalval %> </font>
   <% end %>
 </p>
+
+<%= link_to "Refresh Stock Data", stock_path, method: :put, id: @stock.id %></a>

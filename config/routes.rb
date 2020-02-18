@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'homepage/index'
   get 'transactions', to: "static#transactions", as: "transactions"
   get 'buy', to: "stocks#new", as: "buy"
+  #get 'refresh', to: "stocks#show", as: "buy"
 
   #resources :users do
   #  member do

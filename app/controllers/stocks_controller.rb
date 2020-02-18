@@ -77,6 +77,24 @@ class StocksController < ApplicationController
     #puts stock_quote.open
   end
 
+  def update
+    @stock = Stock.find(params[:id])
+    begin
+      stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
+      stock_quote = stk.quote
+      av_price = (stock_quote.price).to_f
+      av_open = (stock_quote.open).to_f
+      @stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
+      redirect_to @stock
+    rescue Alphavantage::Error => e
+        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
+        render 'new'
+      end
+    @totalval = (@stock.share_price) * (@stock.quantity)
+    puts @stock.quantity
+    puts @totalval
+  end
+
   private
   def stock_params
     params.require(:stock).permit(:symbol, :quantity)
