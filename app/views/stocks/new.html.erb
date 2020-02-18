@@ -17,7 +17,17 @@
           <tr>
             <td><%= stock.symbol %></td>
             <td><%= stock.quantity %></td>
-            <td><%= stock.share_price %></td>
+            <% if stock.open_price != nil %>
+              <% if stock.share_price > stock.open_price %>
+                <td class="posText"><%= stock.share_price %></td>
+              <% elsif stock.share_price < stock.open_price %>
+                <td class="negText"><%= stock.share_price %></td>
+              <% else %>
+                <td class="neutText"><%= stock.share_price %></td>
+              <% end %>
+            <% else %>
+              <td class="neutText"><%= stock.share_price %></td>
+            <% end %>
             <td><%= stock.last_updated %></td>
             <td><%= link_to 'More Info', stock_path(stock) %></td>
           </tr>
