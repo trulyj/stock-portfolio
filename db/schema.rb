@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_17_212112) do
+ActiveRecord::Schema.define(version: 2020_02_18_172651) do
 
   create_table "stocks", force: :cascade do |t|
     t.string "symbol"
@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 2020_02_17_212112) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"
+    t.decimal "share_price"
+    t.datetime "last_updated"
   end
 
   create_table "transactions", force: :cascade do |t|

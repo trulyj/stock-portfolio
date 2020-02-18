@@ -32,7 +32,8 @@ class StocksController < ApplicationController
     if @stock.save
       stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
       stk_quote = stk.quote
-      @user.balance = @user.balance - stk_quote.price*@stock.quantity
+      @stock.update(share_price: (stk_quote.price).to_f, last_updated: DateTime.now)
+      @user.balance = @user.balance - (stk_quote.price).to_f*@stock.quantity
       #@user.balance = @user.balance - 60
       @user.save
       @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: 60, time: DateTime.now)
