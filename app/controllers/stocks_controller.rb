@@ -30,31 +30,45 @@ class StocksController < ApplicationController
     puts "Enter create"
     @user = current_user
     @stock = @user.stocks.new(stock_params)
+    begin
+      puts "BEGIN"
+      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      puts "API CALL DONE"
+      puts stk.inspect
+      stock_quote = stk.quote
+      puts "QUOTE EXTRACTED"
+      av_price = (stock_quote.price).to_f
+      av_open = (stock_quote.open).to_f
+      puts "PRICE CONVERTED"
+      puts av_price
+      #p = 60
+      if av_price*@stock.quantity > @stock.user.balance
+        @stock.errors[:base] << "You do not have enough money to make this transaction."
+      end
+    rescue Alphavantage::Error => e
+      @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in 5 minutes!"
+    end
+    #@stock = @user.stocks.new(stock_params)
+    #stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
     if @stock.save
-      stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
-      stk_quote = stk.quote
-      @stock.update(share_price: (stk_quote.price).to_f, open_price:(stk_quote.open).to_f, last_updated: DateTime.now)
-      @user.balance = @user.balance - (stk_quote.price).to_f*@stock.quantity
+      @stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
+      @user.balance = @user.balance - av_price.to_f*@stock.quantity
       #@user.balance = @user.balance - 60
       @user.save
       @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
       redirect_to @stock
     else
-      puts @stock.errors.size
-      puts @stock.errors.full_messages
-      puts @stock.errors[:symbol]
       @stock.errors.delete(:symbol)
       @existing = Stock.find_by symbol: @stock.symbol, user_id: @user.id
-      puts @user.id
-      puts @stock.symbol
-      puts @existing
       if (@existing != nil and @stock.errors.size == 0)
-        stk = Alphavantage::Stock.new symbol: @existing.symbol, key: ENV['AV_KEY']
-        stk_quote = stk.quote
-        @existing.update(quantity: @existing.quantity + @stock.quantity, share_price: (stk_quote.price).to_f, open_price:(stk_quote.open).to_f, last_updated: DateTime.now)
+        puts av_price
+        @existing.update(quantity: @existing.quantity + @stock.quantity, share_price: av_price, open_price: av_open, last_updated: DateTime.now)
+        @existing.save
+        @user.balance = @user.balance - av_price.to_f*@stock.quantity
+        #@user.balance = @user.balance - 60
+        @user.save
         @user.transactions.create(buyorsell: "BUY", symbol: @existing.symbol, quantity: @stock.quantity, price: @existing.share_price, time: DateTime.now)
         redirect_to @existing
-        #@stock.errors.clear
       else
         render 'new'
       end

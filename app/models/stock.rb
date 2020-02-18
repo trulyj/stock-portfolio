@@ -4,6 +4,8 @@ class SymbolValidator < ActiveModel::Validator
       stk = Alphavantage::Stock.new symbol: stock.symbol, key: ENV['AV_KEY']
       stk_quote = stk.quote
       p = (stk_quote.price).to_f
+      puts stk
+      puts stk_quote
       puts p
       #p = 60
       if p*stock.quantity > stock.user.balance
@@ -19,5 +21,5 @@ class Stock < ApplicationRecord
   belongs_to :user
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :symbol, presence: true, uniqueness: { scope: :user, message: "You already bought this stock." }
-  validates_with SymbolValidator
+  #validates_with SymbolValidator
 end
