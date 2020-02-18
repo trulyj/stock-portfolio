@@ -42,11 +42,13 @@ class StocksController < ApplicationController
     else
       puts @stock.errors.size
       puts @stock.errors.full_messages
+      puts @stock.errors[:symbol]
+      @stock.errors.delete(:symbol)
       @existing = Stock.find_by symbol: @stock.symbol, user_id: @user.id
       puts @user.id
       puts @stock.symbol
       puts @existing
-      if (@existing != nil and @stock.errors.size == 1)
+      if (@existing != nil and @stock.errors.size == 0)
         stk = Alphavantage::Stock.new symbol: @existing.symbol, key: ENV['AV_KEY']
         stk_quote = stk.quote
         @existing.update(quantity: @existing.quantity + @stock.quantity, share_price: (stk_quote.price).to_f, open_price:(stk_quote.open).to_f, last_updated: DateTime.now)
