@@ -40,15 +40,17 @@ class StocksController < ApplicationController
       @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
       redirect_to @stock
     else
+      puts @stock.errors.size
+      puts @stock.errors.full_messages
       @existing = Stock.find_by symbol: @stock.symbol, user_id: @user.id
       puts @user.id
       puts @stock.symbol
       puts @existing
-      if (@existing != nil)
+      if (@existing != nil and @stock.errors.size == 1)
         stk = Alphavantage::Stock.new symbol: @existing.symbol, key: ENV['AV_KEY']
         stk_quote = stk.quote
         @existing.update(quantity: @existing.quantity + @stock.quantity, share_price: (stk_quote.price).to_f, open_price:(stk_quote.open).to_f, last_updated: DateTime.now)
-        @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: @stock.share_price, time: DateTime.now)
+        @user.transactions.create(buyorsell: "BUY", symbol: @existing.symbol, quantity: @stock.quantity, price: @existing.share_price, time: DateTime.now)
         redirect_to @existing
         #@stock.errors.clear
       else

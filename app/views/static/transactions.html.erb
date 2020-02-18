@@ -15,7 +15,9 @@
       <td><%= transaction.symbol %></td>
       <td><%= transaction.quantity %></td>
       <td><%= transaction.price %></td>
-      <td><%= transaction.price*transaction.quantity %></td>
+      <% if transaction.price != nil %>
+        <td><%= transaction.price*transaction.quantity %></td>
+      <% end %>
       <td><%= transaction.time %></td>
     </tr>
   <% end %>
