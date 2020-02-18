@@ -43,8 +43,8 @@ class StocksController < ApplicationController
       puts @stock.symbol
       puts @existing
       if (@existing != nil)
-        puts "REPEAT"
         @existing.update(quantity: @existing.quantity + @stock.quantity)
+        @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: @stock.quantity, price: 60, time: DateTime.now)
         redirect_to @existing
         #@stock.errors.clear
       else
