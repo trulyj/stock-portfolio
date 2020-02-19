@@ -50,7 +50,12 @@
 </p>
 
 <p>
-  <strong>Do you want to buy <%= @qty %> shares of <%= @sym %> for approximately $<%= @av_price*@qty %>? </strong>
+  Your Current Balance:
+  <%= current_user.balance %>
+</p>
+
+<p>
+  <strong>Do you want to buy <%= @qty %> shares of <%= @sym %> for approximately $<%= @av_price*@qty %>? (Prices may fluctuate in the time it takes to confirm.)</strong>
 </p>
 
 <%= form_with scope: :stock, url: stocks_path, local: true do |form| %>
@@ -61,4 +66,4 @@
   </p>
 <% end %>
 
-<a class="nav-link"><%= link_to "No, I want to look at other stocks.", buy_path %></a>
+<a class="nav-link"><%= link_to "No, I want to look at other stocks.", manage_path %></a>

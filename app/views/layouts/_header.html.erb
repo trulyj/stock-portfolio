@@ -4,7 +4,7 @@
     <ul class="navbar-nav navbar-right">
       <a class="nav-link"><%= link_to "Home", root_path, id: "nlink" %></a>
       <% if user_signed_in? %>
-        <a class="nav-link"><%= link_to "Buy", buy_path, id: "nlink" %></a>
+        <a class="nav-link"><%= link_to "Buy", manage_path, id: "nlink" %></a>
         <a class="nav-link"><%= link_to "Transactions", transactions_path, id: "nlink" %></a>
         <a class="nav-link"><%= link_to "Logout", destroy_user_session_path, method: :delete, id: "nlink" %></a>
       <% else %>

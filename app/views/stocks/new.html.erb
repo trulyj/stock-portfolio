@@ -1,8 +1,7 @@
-<h1>Buy Stocks</h1>
+<h1>Manage Stocks</h1>
 <div class="row">
   <div class="col-12 col-md-8">
-    <strong>Portfolio:</strong>
-    <%= current_user.stocks.size %>
+    <h2>Portfolio</h2>
     <table>
       <tr>
         <th>Symbol</th>
@@ -36,9 +35,9 @@
     </table>
   </div>
   <div class="col-6 col-md-4">
-    Buy Stocks
+    <h2>Buy Stocks</h2>
     <p>
-      <strong>Balance:</strong>
+      Balance:
       <%= current_user.balance %>
     </p>
     <%= form_with scope: :stock, url: {action: 'confirm'}, local: true do |form| %>

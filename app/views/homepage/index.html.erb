@@ -2,14 +2,12 @@
 <div class="container-fluid">
   <div class="row">
     <p>Buy and view stocks intuitively with Stock Portfolio® </p>
+    <p>Buying stocks has never been easier! View stocks color coded based on recent performance. </p>
+    <p> Our transaction log makes it easier than ever to view your trading history. </p>
+  </div>
+  <div class="row">
     <%= link_to "Register", new_user_registration_path, method: :get %>
     <%= link_to "Login", new_user_session_path, method: :get %>
     <%= link_to "Logout", destroy_user_session_path, method: :delete %>
-  </div>
-  <div class="row align-items-start">
-    <p>Buying stocks has never been easier! View stocks color coded clearly based on recent performance. </p>
-  </div>
-  <div class="row">
-    <p> Our transaction log makes it easier than ever to view your trading history. </p>
   </div>
 </div>

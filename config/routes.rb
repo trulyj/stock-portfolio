@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   get 'homepage/index'
   get 'transactions', to: "static#transactions", as: "transactions"
-  get 'buy', to: "stocks#new", as: "buy"
+  get 'manage', to: "stocks#new", as: "manage"
   resources :stocks do
     collection do
       post 'confirm'
