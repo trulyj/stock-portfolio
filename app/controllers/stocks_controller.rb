@@ -2,9 +2,7 @@ require 'date'
 
 class StocksController < ApplicationController
   def index
-    redirect_to new_stock_path
-    #@stocks = current_user.stocks
-    #@stocks = Stock.all
+    redirect_to buy_path
   end
 
   def show
@@ -14,21 +12,10 @@ class StocksController < ApplicationController
       redirect_to buy_path
       return
     end
-    #av = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
-    #@avinfo = av.quote
-    #@totalval = (@avinfo.price).to_f * (@stock.quantity)
-    #@totalval = (@stock.share_price) * (@stock.quantity)
-    #puts @avinfo.price
-    puts @stock.quantity
-    puts @totalval
   end
 
   def new
     @stock = Stock.new
-    #stock = Alphavantage::Stock.new symbol: "QQQQQQQQQQQQ", key: ENV['AV_KEY']
-    #stock_quote = stock.quote
-    #puts stock_quote.symbol
-    #puts stock_quote.open
   end
 
   def create
@@ -90,7 +77,7 @@ class StocksController < ApplicationController
     @sym = params[:stock][:symbol]
     if @qty <= 0
       @stock.errors[:base] << "Quantity must be greater than 0."
-      render 'new'
+      #render 'new'
     end
     begin
       stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
@@ -99,9 +86,12 @@ class StocksController < ApplicationController
       @av_open = (stock_quote.open).to_f
     rescue Alphavantage::Error => e
         #@stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
-        @stock.errors[:base] << "API call failed. Try again in a minute!"
+        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
         #flash.now[:danger] = 'API call failed. Try again in a minute!'
-        render 'new'
+        #render 'new'
+    end
+    if @stock.errors.any?
+      render 'new'
     end
   end
 
