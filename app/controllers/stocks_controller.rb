@@ -68,13 +68,36 @@ class StocksController < ApplicationController
         render 'new'
       end
     rescue Alphavantage::Error => e
-        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
+        @stock.errors[:base] << "API call failed. Try again in a minute!"
         render 'new'
     end
     #stock = Alphavantage::Stock.new symbol: :sym, key: ENV['AV_KEY']
     #stock_quote = stock.quote
     #puts stock_quote.symbol
     #puts stock_quote.open
+  end
+
+  def confirm
+    @stock = Stock.new
+    @user = current_user
+    @qty = params[:stock][:quantity]
+    @qty = @qty.to_i
+    @sym = params[:stock][:symbol]
+    if @qty <= 0
+      @stock.errors[:base] << "Quantity must be greater than 0."
+      render 'new'
+    end
+    begin
+      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      stock_quote = stk.quote
+      @av_price = (stock_quote.price).to_f
+      @av_open = (stock_quote.open).to_f
+    rescue Alphavantage::Error => e
+        #@stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
+        @stock.errors[:base] << "API call failed. Try again in a minute!"
+        #flash.now[:danger] = 'API call failed. Try again in a minute!'
+        render 'new'
+    end
   end
 
   def update

@@ -27,11 +27,11 @@
 <p>
   <strong>Current Total Price:</strong>
   <% if @stock.share_price > @stock.open_price %>
-    <font color="green"> <%= @totalval %> </font>
+    <font color="green"> <%= @stock.share_price*@stock.quantity %> </font>
   <% elsif @stock.share_price < @stock.open_price %>
-    <font color="red"> <%= @totalval %> </font>
+    <font color="red"> <%= @stock.share_price*@stock.quantity %> </font>
   <% else %>
-    <font color="gray"> <%= @totalval %> </font>
+    <font color="gray"> <%= @stock.share_price*@stock.quantity %> </font>
   <% end %>
 </p>
 

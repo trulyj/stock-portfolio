@@ -41,7 +41,7 @@
       <strong>Balance:</strong>
       <%= current_user.balance %>
     </p>
-    <%= form_with scope: :stock, url: stocks_path, local: true do |form| %>
+    <%= form_with scope: :stock, url: {action: 'confirm'}, local: true do |form| %>
     <% if @stock.errors.any? %>
       <div id="error_explanation">
         <h2>
@@ -64,7 +64,7 @@
       <%= form.number_field :quantity %>
     </p>
     <p>
-      <%= form.submit %>
+      <%= form.submit 'Buy' %>
     </p>
     <% end %>
   </div>
