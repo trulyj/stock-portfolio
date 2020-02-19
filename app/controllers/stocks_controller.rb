@@ -9,10 +9,15 @@ class StocksController < ApplicationController
 
   def show
     @stock = Stock.find(params[:id])
+    unless current_user.id == @stock.user_id
+      flash[:notice] = "You don't have access to that order!"
+      redirect_to buy_path
+      return
+    end
     #av = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
     #@avinfo = av.quote
     #@totalval = (@avinfo.price).to_f * (@stock.quantity)
-    @totalval = (@stock.share_price) * (@stock.quantity)
+    #@totalval = (@stock.share_price) * (@stock.quantity)
     #puts @avinfo.price
     puts @stock.quantity
     puts @totalval
