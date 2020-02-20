@@ -16,6 +16,34 @@ class StocksController < ApplicationController
 
   def new
     @stock = Stock.new
+    current_user.stocks.each do |stock|
+    @uptodate = true
+      if (stock.last_updated < DateTime.now - 0.5.minutes)
+        begin
+          stk = Alphavantage::Stock.new symbol: stock.symbol, key: ENV['AV_KEY']
+          stock_quote = stk.quote
+          av_price = (stock_quote.price).to_f
+          av_open = (stock_quote.open).to_f
+          puts stock_quote.open
+          puts stock_quote.symbol
+          puts stock_quote.output
+          puts stock_quote.price
+          if stock_quote.open == nil
+            #@stock.errors[:base] << "Some stock data may not be up to date. Try refreshing data in a minute!"
+            @uptodate = false
+          else
+            stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
+          end
+        rescue Alphavantage::Error => e
+            @stock.errors[:base] << "API call failed. Try refreshing data again in a minute!"
+            render 'new'
+        end
+      end
+    end
+    if @uptodate == false
+      @stock.errors[:base] << "Some stock data may not be up to date. Try refreshing data in a minute!"
+    render 'new'
+    end
   end
 
   def create
@@ -174,21 +202,25 @@ class StocksController < ApplicationController
   end
 
   def update
+    puts "enter update"
     @stock = Stock.find(params[:id])
     begin
       stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
       stock_quote = stk.quote
       av_price = (stock_quote.price).to_f
       av_open = (stock_quote.open).to_f
-      @stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
-      redirect_to @stock
-    rescue Alphavantage::Error => e
-        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
-        render 'new'
+      if stock_quote.open == nil
+        @stock.errors[:base] << "API call failed. Try refreshing data again in a minute!"
+        puts "NILLLLL"
+      else
+        @stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
       end
-    @totalval = (@stock.share_price) * (@stock.quantity)
-    puts @stock.quantity
-    puts @totalval
+      #@stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
+      render 'show'
+    rescue Alphavantage::Error => e
+        @stock.errors[:base] << "API call failed. Try refreshing data again in a minute!"
+        render 'new'
+    end
   end
 
   private
