@@ -6,11 +6,16 @@ class StocksController < ApplicationController
   end
 
   def show
-    @stock = Stock.find(params[:id])
-    unless current_user.id == @stock.user_id
-      flash[:notice] = "You don't have access to that order!"
-      redirect_to buy_path
-      return
+    begin
+      @stock = Stock.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to manage_path
+    else
+      unless current_user.id == @stock.user_id
+        #flash[:notice] = "You don't have access to that order!"
+        redirect_to manage_path
+        return
+      end
     end
   end
 

@@ -19,6 +19,11 @@ Rails.application.routes.draw do
       post 'sell'
     end
   end
+
+  #match "/stocks/confirm" => redirect("/manage")
+  #get "stocks/sell" =>redirect("/manage")
+  #get "stocks/confirm" =>redirect("/manage")
+  #get "stocks/*" => redirect("/manage")
   #get 'confirm', to: "stocks#confirm", as: "confirm"
   #get 'refresh', to: "stocks#show", as: "buy"
 
