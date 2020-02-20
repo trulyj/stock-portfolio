@@ -1,4 +1,18 @@
 <h1>Manage Stocks</h1>
+<% if @stock.errors.any? %>
+  <div id="error_explanation">
+    <h2>
+      <%= pluralize(@stock.errors.count, "error") %> prohibited
+      this transaction:
+    </h2>
+    <ul>
+      <% @stock.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <div class="row">
   <div class="col-12 col-md-8">
     <h2>Portfolio</h2>
@@ -35,25 +49,13 @@
     </table>
   </div>
   <div class="col-6 col-md-4">
-    <h2>Buy Stocks</h2>
     <p>
       Balance:
       <%= current_user.balance %>
     </p>
+    <h2>Buy Stocks</h2>
     <%= form_with scope: :stock, url: {action: 'confirm'}, local: true do |form| %>
-    <% if @stock.errors.any? %>
-      <div id="error_explanation">
-        <h2>
-          <%= pluralize(@stock.errors.count, "error") %> prohibited
-          this transaction:
-        </h2>
-        <ul>
-          <% @stock.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+    
     <p>
       <%= form.label :symbol %><br>
       <%= form.text_field :symbol %>
@@ -64,6 +66,21 @@
     </p>
     <p>
       <%= form.submit 'Buy' %>
+    </p>
+    <% end %>
+
+    <h2>Sell Stocks</h2>
+    <%= form_with scope: :stock, url: {action: 'sellconfirm'}, local: true do |form| %>
+    <p>
+      <%= form.label :symbol %><br>
+      <%= form.text_field :symbol %>
+    </p>
+    <p>
+      <%= form.label :quantity %><br>
+      <%= form.number_field :quantity %>
+    </p>
+    <p>
+      <%= form.submit 'Sell' %>
     </p>
     <% end %>
   </div>

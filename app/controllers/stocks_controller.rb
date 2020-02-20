@@ -95,6 +95,84 @@ class StocksController < ApplicationController
     end
   end
 
+  def sell
+    puts "Enter sell"
+    #@stock.errors.clear
+    @user = current_user
+    @qty = params[:stock][:quantity]
+    @qty = @qty.to_i
+    @stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
+    initQTY = @stock.quantity
+    begin
+      puts "BEGIN"
+      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      puts "API CALL DONE"
+      puts stk.inspect
+      stock_quote = stk.quote
+      puts "QUOTE EXTRACTED"
+      av_price = (stock_quote.price).to_f
+      av_open = (stock_quote.open).to_f
+      puts "PRICE CONVERTED"
+      puts av_price
+      #p = 60
+      puts "OLD BALANCE"
+      puts @user.balance
+      @stock.update(quantity: initQTY-(params[:stock][:quantity]).to_i, share_price: av_price, open_price: av_open, last_updated: DateTime.now)
+      @user.balance = @user.balance + av_price*@qty
+      @user.save
+      puts "NEW BALANCE"
+      puts @user.balance
+      @user.transactions.create(buyorsell: "SELL", symbol: @stock.symbol, quantity: (params[:stock][:quantity]).to_i, price: @stock.share_price, time: DateTime.now)
+      if @stock.quantity <= 0
+        @stock.destroy
+        @stock = Stock.new
+        @stock.errors.clear
+        render 'new'
+      else
+        render 'new'
+      end
+    rescue Alphavantage::Error => e
+        @stock.errors[:base] << "API call failed. Try again in a minute!"
+        render 'new'
+    end
+    #stock = Alphavantage::Stock.new symbol: :sym, key: ENV['AV_KEY']
+    #stock_quote = stock.quote
+    #puts stock_quote.symbol
+    #puts stock_quote.open
+  end
+
+  def sellconfirm
+    @stock = Stock.new
+    @user = current_user
+    @qty = params[:stock][:quantity]
+    @qty = @qty.to_i
+    @sym = params[:stock][:symbol]
+    if @qty <= 0
+      @stock.errors[:base] << "Quantity must be greater than 0."
+      #render 'new'
+    end
+    @existing = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
+    if @existing == nil
+      @stock.errors[:base] << "You can only sell stocks you own."
+    elsif @qty > @existing.quantity
+      @stock.errors[:base] << "You cannot sell more of a stock than you own."
+    end
+    begin
+      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      stock_quote = stk.quote
+      @av_price = (stock_quote.price).to_f
+      @av_open = (stock_quote.open).to_f
+    rescue Alphavantage::Error => e
+        #@stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
+        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
+        #flash.now[:danger] = 'API call failed. Try again in a minute!'
+        #render 'new'
+    end
+    if @stock.errors.any?
+      render 'new'
+    end
+  end
+
   def update
     @stock = Stock.find(params[:id])
     begin

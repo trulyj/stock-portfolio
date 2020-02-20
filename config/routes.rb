@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   resources :stocks do
     collection do
       post 'confirm'
+      post 'sellconfirm'
+      post 'sell'
     end
   end
   #get 'confirm', to: "stocks#confirm", as: "confirm"
