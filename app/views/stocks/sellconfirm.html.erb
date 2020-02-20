@@ -55,6 +55,11 @@
 </p>
 
 <p>
+  Approximate Balance After Transaction:
+  <%= current_user.balance+@av_price*@qty %>
+</p>
+
+<p>
   <strong>Do you want to sell <%= @qty %> shares of <%= @sym %> for approximately $<%= @av_price*@qty %>? (Prices may fluctuate in the time it takes to confirm.)</strong>
 </p>
 
