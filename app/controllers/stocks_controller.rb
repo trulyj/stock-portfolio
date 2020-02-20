@@ -2,7 +2,7 @@ require 'date'
 
 class StocksController < ApplicationController
   def index
-    redirect_to buy_path
+    redirect_to manage_path
   end
 
   def show
@@ -41,7 +41,7 @@ class StocksController < ApplicationController
       end
     end
     if @uptodate == false
-      @stock.errors[:base] << "Some stock data may not be up to date. Try refreshing data in a minute!"
+      @stock.errors[:base] << "One or more API calls failed (only five are allowed per minute), so some stock data may not be up to date. Try refreshing data in a minute!"
     render 'new'
     end
   end
@@ -58,7 +58,7 @@ class StocksController < ApplicationController
     end
     if params[:stock][:quantity] == 0
       @stock.errors[:base] << "Quantity must be greater than 0."
-      render 'new'
+      #render 'new'
     end
     begin
       puts "BEGIN"
@@ -74,7 +74,10 @@ class StocksController < ApplicationController
       #p = 60
       if av_price*(params[:stock][:quantity]).to_i > @user.balance
         @stock.errors[:base] << "You do not have enough money to make this transaction."
-        render 'new'
+        #render 'new'
+      elsif stock_quote.open == nil
+        @stock.errors[:base] << "API call failed. Try again in a minute!"
+        #render 'new'
       elsif @stock.save
         @stock.update(quantity: initQTY+(params[:stock][:quantity]).to_i, share_price: av_price, open_price: av_open, last_updated: DateTime.now)
         #@user.balance = @user.balance - av_price.to_f*@stock.quantity
@@ -83,14 +86,15 @@ class StocksController < ApplicationController
         @user.balance = @user.balance - av_price*@stock.quantity
         @user.save
         @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: (params[:stock][:quantity]).to_i, price: @stock.share_price, time: DateTime.now)
-        redirect_to @stock
-      else
-        render 'new'
+        #redirect_to @stock
+      #else
+        #render 'new'
       end
     rescue Alphavantage::Error => e
         @stock.errors[:base] << "API call failed. Try again in a minute!"
         render 'new'
     end
+    render 'new'
     #stock = Alphavantage::Stock.new symbol: :sym, key: ENV['AV_KEY']
     #stock_quote = stock.quote
     #puts stock_quote.symbol
@@ -117,11 +121,11 @@ class StocksController < ApplicationController
       puts stock_quote.price
       @av_price = (stock_quote.price).to_f
       @av_open = (stock_quote.open).to_f
+      if stock_quote.open == nil
+        @stock.errors[:base] << "API call failed. Try again in a minute!"
+      end
     rescue Alphavantage::Error => e
-        #@stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
-        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
-        #flash.now[:danger] = 'API call failed. Try again in a minute!'
-        #render 'new'
+        @stock.errors[:base] << "Stock symbol is invalid."
     end
     if @stock.errors.any?
       render 'new'
@@ -137,41 +141,32 @@ class StocksController < ApplicationController
     @stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
     initQTY = @stock.quantity
     begin
-      puts "BEGIN"
       stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
-      puts "API CALL DONE"
-      puts stk.inspect
       stock_quote = stk.quote
-      puts "QUOTE EXTRACTED"
       av_price = (stock_quote.price).to_f
       av_open = (stock_quote.open).to_f
-      puts "PRICE CONVERTED"
-      puts av_price
-      #p = 60
-      puts "OLD BALANCE"
-      puts @user.balance
+
+      if stock_quote.open == nil
+        @stock.errors[:base] << "API call failed. Try again in a minute!"
+      end
+
       @stock.update(quantity: initQTY-(params[:stock][:quantity]).to_i, share_price: av_price, open_price: av_open, last_updated: DateTime.now)
       @user.balance = @user.balance + av_price*@qty
       @user.save
-      puts "NEW BALANCE"
-      puts @user.balance
       @user.transactions.create(buyorsell: "SELL", symbol: @stock.symbol, quantity: (params[:stock][:quantity]).to_i, price: @stock.share_price, time: DateTime.now)
+
       if @stock.quantity <= 0
         @stock.destroy
         @stock = Stock.new
         @stock.errors.clear
-        render 'new'
-      else
-        render 'new'
       end
     rescue Alphavantage::Error => e
         @stock.errors[:base] << "API call failed. Try again in a minute!"
-        render 'new'
     end
-    #stock = Alphavantage::Stock.new symbol: :sym, key: ENV['AV_KEY']
-    #stock_quote = stock.quote
-    #puts stock_quote.symbol
-    #puts stock_quote.open
+    #if @stock.errors.any?
+    #  render 'new'
+    #end
+    render 'new'
   end
 
   def sellconfirm
@@ -196,11 +191,11 @@ class StocksController < ApplicationController
       stock_quote = stk.quote
       @av_price = (stock_quote.price).to_f
       @av_open = (stock_quote.open).to_f
+      if stock_quote.open == nil
+        @stock.errors[:base] << "API call failed. Try again in a minute!"
+      end
     rescue Alphavantage::Error => e
-        #@stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
-        @stock.errors[:base] << "API call failed. Stock symbol is invalid or there may have been too many API calls. Try again in a minute!"
-        #flash.now[:danger] = 'API call failed. Try again in a minute!'
-        #render 'new'
+        @stock.errors[:base] << "Stock symbol is invalid."
     end
     if @stock.errors.any?
       render 'new'
@@ -217,7 +212,6 @@ class StocksController < ApplicationController
       av_open = (stock_quote.open).to_f
       if stock_quote.open == nil
         @stock.errors[:base] << "API call failed. Try refreshing data again in a minute!"
-        puts "NILLLLL"
       else
         @stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
       end
