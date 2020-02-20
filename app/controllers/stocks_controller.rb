@@ -18,7 +18,7 @@ class StocksController < ApplicationController
     @stock = Stock.new
     current_user.stocks.each do |stock|
     @uptodate = true
-      if (stock.last_updated < DateTime.now - 0.5.minutes)
+      if (stock.last_updated < DateTime.now - 5.minutes)
         begin
           stk = Alphavantage::Stock.new symbol: stock.symbol, key: ENV['AV_KEY']
           stock_quote = stk.quote
