@@ -102,6 +102,7 @@ class StocksController < ApplicationController
     @user = current_user
     @qty = params[:stock][:quantity]
     @qty = @qty.to_i
+    params[:stock][:symbol] = params[:stock][:symbol].upcase
     @sym = params[:stock][:symbol]
     if @qty <= 0
       @stock.errors[:base] << "Quantity must be greater than 0."
@@ -110,6 +111,10 @@ class StocksController < ApplicationController
     begin
       stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
       stock_quote = stk.quote
+      puts stock_quote.open
+      puts stock_quote.symbol
+      puts stock_quote.output
+      puts stock_quote.price
       @av_price = (stock_quote.price).to_f
       @av_open = (stock_quote.open).to_f
     rescue Alphavantage::Error => e
@@ -174,6 +179,7 @@ class StocksController < ApplicationController
     @user = current_user
     @qty = params[:stock][:quantity]
     @qty = @qty.to_i
+    params[:stock][:symbol] = params[:stock][:symbol].upcase
     @sym = params[:stock][:symbol]
     if @qty <= 0
       @stock.errors[:base] << "Quantity must be greater than 0."
