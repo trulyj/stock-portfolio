@@ -1,13 +1,12 @@
 <h1>Stock Portfolio</h1>
-<div class="container-fluid">
-  <div class="row">
-    <p>Buy and view stocks intuitively with Stock Portfolio® </p>
-    <p>Buying stocks has never been easier! View stocks color coded based on recent performance. </p>
-    <p> Our transaction log makes it easier than ever to view your trading history. </p>
+<header class=="page-header header container-fluid">
+  <div class="overlay">
+    <div class="centerbox">
+      <p class="centerbox-text">Buy and view stocks intuitively with Stock Portfolio®. Buying stocks has
+        never been easier! View stocks color coded based on recent performance. Our transaction log
+        makes it easier than ever to view your trading history. </p>
+      <%= link_to "Login", new_user_session_path, method: :get, id: "nlink" %>
+      <%= link_to "Register", new_user_registration_path, method: :get, id: "nlink" %>
+    </div>
   </div>
-  <div class="row">
-    <%= link_to "Register", new_user_registration_path, method: :get %>
-    <%= link_to "Login", new_user_session_path, method: :get %>
-    <%= link_to "Logout", destroy_user_session_path, method: :delete %>
-  </div>
-</div>
+</header>
