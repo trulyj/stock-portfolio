@@ -1,24 +1,8 @@
-# README
+# STOCK PORTFOLIO
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This website uses the AlphaVantage API (with StefanoMartin's gem) and Devise to let users make accounts and simulate buying and selling stocks from an initial balance of $5000. The "Manage" page contains a portfolio os the user's currently owned stocks as well as options to buy or sell stocks. The "Transactions" page contains the user's full transaction history.
 
-Things you may want to cover:
+Because of limitations of the AlphaVantage API, API calls will fail when more than one is used in a minute.
+To prevent excessive API calls, the Manage page only updates the values of stocks if they haven't been updated in the last five minutes. To refresh a stock more frequently, go to its more info page and press "Refresh Stock Data".
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+AlphaVantage API requires an API key which you can get for free. I used DOTENV to keep the API key secure in a .env file. You can see how this .env file can be structured so you can make your own by looking at .env.template.
