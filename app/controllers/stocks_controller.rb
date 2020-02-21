@@ -27,25 +27,32 @@ class StocksController < ApplicationController
     @uptodate = true
       #only update stocks that haven't been updated in the last 5 minutes to prevent excessive API calls
       #(user can always manually update stock on show info page for each stock.)
-      if (stock.last_updated < DateTime.now - 5.minutes)
+      #if (stock.last_updated < DateTime.now - 5.minutes)
         begin
-          stk = Alphavantage::Stock.new symbol: stock.symbol, key: ENV['AV_KEY']
-          stock_quote = stk.quote
-          av_price = (stock_quote.price).to_f
-          av_open = (stock_quote.open).to_f
-          if stock_quote.open == nil
+          #stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+          client = IEX::Api::Client.new(
+            publishable_token: ENV['AV_KEY'],
+            endpoint: 'https://cloud.iexapis.com/v1'
+          )
+          #stock_quote = stk.quote
+          stock_quote = client.quote(stock.symbol)
+          #av_price = (stock_quote.price).to_f
+          #av_price = (stock_quote.open).to_f
+          av_price = (stock_quote.latest_price).to_f
+          av_open = (stock_quote.change).to_f
+          if stock_quote.latest_price == nil
             @uptodate = false
           else
             stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
           end
-        rescue Alphavantage::Error => e
+        rescue IEX::Errors::SymbolNotFoundError => e
             @stock.errors[:base] << "API call failed. Try refreshing data again in a minute!"
             render 'new'
         end
-      end
+      #end
     end
     if @uptodate == false
-      @stock.errors[:base] << "One or more API calls failed (only five are allowed per minute), so some stock data may not be up to date. Try refreshing data in a minute!"
+      @stock.errors[:base] << "One or more API calls failed, so some stock data may not be up to date. Try refreshing data in a minute!"
     render 'new'
     end
   end
@@ -65,15 +72,22 @@ class StocksController < ApplicationController
       @stock.errors[:base] << "Quantity must be greater than 0."
     end
     begin
-      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
-      stock_quote = stk.quote
-      av_price = (stock_quote.price).to_f
-      av_open = (stock_quote.open).to_f
+      #stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      client = IEX::Api::Client.new(
+        publishable_token: ENV['AV_KEY'],
+        endpoint: 'https://cloud.iexapis.com/v1'
+      )
+      #stock_quote = stk.quote
+      stock_quote = client.quote(params[:stock][:symbol])
+      #av_price = (stock_quote.price).to_f
+      #av_price = (stock_quote.open).to_f
+      av_price = (stock_quote.latest_price).to_f
+      av_open = (stock_quote.change).to_f
 
       if av_price*(params[:stock][:quantity]).to_i > @user.balance
         #user is trying to spend more money than they have
         @stock.errors[:base] << "You do not have enough money to make this transaction."
-      elsif stock_quote.open == nil
+      elsif stock_quote.latest_price == nil
         @stock.errors[:base] << "API call failed. Try again in a minute!"
       elsif @stock.save
         #transaction went through normally - update stock info and user's balance, add transaction to transaction log
@@ -82,15 +96,11 @@ class StocksController < ApplicationController
         @user.save
         @user.transactions.create(buyorsell: "BUY", symbol: @stock.symbol, quantity: (params[:stock][:quantity]).to_i, price: @stock.share_price, time: DateTime.now)
       end
-    rescue Alphavantage::Error => e
+    rescue IEX::Errors::SymbolNotFoundError => e
         @stock.errors[:base] << "API call failed. Try again in a minute!"
         render 'new'
     end
     render 'new'
-    #stock = Alphavantage::Stock.new symbol: :sym, key: ENV['AV_KEY']
-    #stock_quote = stock.quote
-    #puts stock_quote.symbol
-    #puts stock_quote.open
   end
 
   def confirm
@@ -105,15 +115,22 @@ class StocksController < ApplicationController
       @stock.errors[:base] << "Quantity must be greater than 0."
     end
     begin
-      #get stock info to display to user so they can confirm their transaction
-      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
-      stock_quote = stk.quote
-      @av_price = (stock_quote.price).to_f
-      @av_open = (stock_quote.open).to_f
-      if stock_quote.open == nil
+      #stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      client = IEX::Api::Client.new(
+        publishable_token: ENV['AV_KEY'],
+        endpoint: 'https://cloud.iexapis.com/v1'
+      )
+      #stock_quote = stk.quote
+      stock_quote = client.quote(params[:stock][:symbol])
+      #av_price = (stock_quote.price).to_f
+      #av_price = (stock_quote.open).to_f
+      @av_price = (stock_quote.latest_price).to_f
+      @av_open = (stock_quote.change).to_f
+      if stock_quote.latest_price == nil
         @stock.errors[:base] << "API call failed. Try again in a minute!"
       end
-    rescue Alphavantage::Error => e
+    #rescue IEX::Errors::SymbolNotFoundError => e
+    rescue IEX::Errors::SymbolNotFoundError => e
         @stock.errors[:base] << "Stock symbol is invalid."
     end
     if @stock.errors.any?
@@ -129,12 +146,19 @@ class StocksController < ApplicationController
     @stock = Stock.find_by symbol: params[:stock][:symbol], user_id: @user.id
     initQTY = @stock.quantity
     begin
-      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
-      stock_quote = stk.quote
-      av_price = (stock_quote.price).to_f
-      av_open = (stock_quote.open).to_f
+      #stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      client = IEX::Api::Client.new(
+        publishable_token: ENV['AV_KEY'],
+        endpoint: 'https://cloud.iexapis.com/v1'
+      )
+      #stock_quote = stk.quote
+      stock_quote = client.quote(params[:stock][:symbol])
+      #av_price = (stock_quote.price).to_f
+      #av_price = (stock_quote.open).to_f
+      av_price = (stock_quote.latest_price).to_f
+      av_open = (stock_quote.change).to_f
 
-      if stock_quote.open == nil
+      if stock_quote.latest_price == nil
         @stock.errors[:base] << "API call failed. Try again in a minute!"
       else
         #transaction went through normally - update stock info and user's balance, add transaction to transaction log
@@ -150,7 +174,7 @@ class StocksController < ApplicationController
           @stock.errors.clear
         end
       end
-    rescue Alphavantage::Error => e
+    rescue IEX::Errors => e
         @stock.errors[:base] << "API call failed. Try again in a minute!"
     end
     render 'new'
@@ -175,14 +199,21 @@ class StocksController < ApplicationController
     end
     begin
       #get stock info to display to user so they can confirm their transaction
-      stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
-      stock_quote = stk.quote
-      @av_price = (stock_quote.price).to_f
-      @av_open = (stock_quote.open).to_f
-      if stock_quote.open == nil
+      #stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      client = IEX::Api::Client.new(
+        publishable_token: ENV['AV_KEY'],
+        endpoint: 'https://cloud.iexapis.com/v1'
+      )
+      #stock_quote = stk.quote
+      stock_quote = client.quote(params[:stock][:symbol])
+      #av_price = (stock_quote.price).to_f
+      #av_price = (stock_quote.open).to_f
+      @av_price = (stock_quote.latest_price).to_f
+      @av_open = (stock_quote.change).to_f
+      if stock_quote.latest_price == nil
         @stock.errors[:base] << "API call failed. Try again in a minute!"
       end
-    rescue Alphavantage::Error => e
+    rescue IEX::Errors::SymbolNotFoundError => e
         @stock.errors[:base] << "Stock symbol is invalid."
     end
     if @stock.errors.any?
@@ -194,17 +225,24 @@ class StocksController < ApplicationController
     #update information for a particular stock.
     @stock = Stock.find(params[:id])
     begin
-      stk = Alphavantage::Stock.new symbol: @stock.symbol, key: ENV['AV_KEY']
-      stock_quote = stk.quote
-      av_price = (stock_quote.price).to_f
-      av_open = (stock_quote.open).to_f
-      if stock_quote.open == nil
+      #stk = Alphavantage::Stock.new symbol: params[:stock][:symbol], key: ENV['AV_KEY']
+      client = IEX::Api::Client.new(
+        publishable_token: ENV['AV_KEY'],
+        endpoint: 'https://cloud.iexapis.com/v1'
+      )
+      #stock_quote = stk.quote
+      stock_quote = client.quote(params[:stock][:symbol])
+      #av_price = (stock_quote.price).to_f
+      #av_price = (stock_quote.open).to_f
+      av_price = (stock_quote.latest_price).to_f
+      av_open = (stock_quote.change).to_f
+      if stock_quote.latest_price == nil
         @stock.errors[:base] << "API call failed. Try refreshing data again in a minute!"
       else
         @stock.update(share_price: av_price, open_price: av_open, last_updated: DateTime.now)
       end
       render 'show'
-    rescue Alphavantage::Error => e
+    rescue IEX::Errors => e
         @stock.errors[:base] << "API call failed. Try refreshing data again in a minute!"
         render 'new'
     end

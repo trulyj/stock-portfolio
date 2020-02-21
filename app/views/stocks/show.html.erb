@@ -22,15 +22,21 @@
 </p>
 
 <p>
-  <strong>Price per Share at Open:</strong>
-  $<%= @stock.open_price %>
+  <strong>Change per Share Since Open:</strong>
+  <% if @stock.open_price > 0 %>
+    <font class=posText> $<%= @stock.open_price %> </font>
+  <% elsif @stock.open_price < 0 %>
+    <font class=negText>  $<%= @stock.open_price %> </font>
+  <% else %>
+    <font class=neutText>  $<%= @stock.open_price %> </font>
+  <% end %>
 </p>
 
 <p>
   <strong>Current Price per Share:</strong>
-  <% if @stock.share_price > @stock.open_price %>
+  <% if @stock.open_price > 0 %>
     <font class=posText> $<%= @stock.share_price %> </font>
-  <% elsif @stock.share_price < @stock.open_price %>
+  <% elsif @stock.open_price < 0 %>
     <font class=negText>  $<%= @stock.share_price %> </font>
   <% else %>
     <font class=neutText>  $<%= @stock.share_price %> </font>
@@ -39,9 +45,9 @@
 
 <p>
   <strong>Current Total Price:</strong>
-  <% if @stock.share_price > @stock.open_price %>
+  <% if @stock.open_price > 0 %>
     <font class=posText>  $<%= @stock.share_price*@stock.quantity %> </font>
-  <% elsif @stock.share_price < @stock.open_price %>
+  <% elsif @stock.open_price < 0 %>
     <font class=negText>  $<%= @stock.share_price*@stock.quantity %> </font>
   <% else %>
     <font class=neutText> $<%= @stock.share_price*@stock.quantity %> </font>

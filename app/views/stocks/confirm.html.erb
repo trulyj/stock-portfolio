@@ -23,15 +23,21 @@
 </p>
 
 <p>
-  Price per Share at Open:
-  $<%= @av_open %>
+  Change per Share Since Open:
+  <% if @av_open > 0 %>
+    <font class=posText> $<%= @av_open %> </font>
+  <% elsif @av_open < 0 %>
+    <font class=negText>  $<%= @av_open %> </font>
+  <% else %>
+    <font class=neutText>  $<%= @av_open %> </font>
+  <% end %>
 </p>
 
 <p>
   Current Price per Share:
-  <% if @av_price > @av_open %>
+  <% if @av_open > 0 %>
     <font class=posText> $<%= @av_price %> </font>
-  <% elsif @av_price < @av_open %>
+  <% elsif @av_open < 0 %>
     <font class=negText> $<%= @av_price %> </font>
   <% else %>
     <font class=neutText> $<%= @av_price %> </font>
@@ -40,9 +46,9 @@
 
 <p>
   Current Total Price:
-  <% if @av_price > @av_open %>
+  <% if @av_open > 0 %>
     <font class=posText> $<%= @av_price*@qty %> </font>
-  <% elsif @av_price < @av_open %>
+  <% elsif @av_open < 0 %>
     <font class=negText> $<%= @av_price*@qty %> </font>
   <% else %>
     <font class=neutText> $<%= @av_price*@qty %> </font>

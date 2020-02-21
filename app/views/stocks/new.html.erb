@@ -33,9 +33,9 @@
             <td><%= stock.symbol %></td>
             <td><%= stock.quantity %></td>
             <% if stock.open_price != nil %>
-              <% if stock.share_price > stock.open_price %>
+              <% if stock.open_price > 0 %>
                 <td class="posText"><%= stock.share_price %></td>
-              <% elsif stock.share_price < stock.open_price %>
+              <% elsif stock.open_price < 0 %>
                 <td class="negText"><%= stock.share_price %></td>
               <% else %>
                 <td class="neutText"><%= stock.share_price %></td>
