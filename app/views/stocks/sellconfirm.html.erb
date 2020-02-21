@@ -24,39 +24,39 @@
 
 <p>
   Price per Share at Open:
-  <%= @av_open %>
+  $<%= @av_open %>
 </p>
 
 <p>
   Current Price per Share:
   <% if @av_price > @av_open %>
-    <font color="green"> <%= @av_price %> </font>
+    <font class=posText> $<%= @av_price %> </font>
   <% elsif @av_price < @av_open %>
-    <font color="red"> <%= @av_price %> </font>
+    <font class=negText> $<%= @av_price %> </font>
   <% else %>
-    <font color="gray"> <%= @av_price %> </font>
+    <font class=neutText> $<%= @av_price %> </font>
   <% end %>
 </p>
 
 <p>
   Current Total Price:
   <% if @av_price > @av_open %>
-    <font color="green"> <%= @av_price*@qty %> </font>
+    <font class=posText> $<%= @av_price*@qty %> </font>
   <% elsif @av_price < @av_open %>
-    <font color="red"> <%= @av_price*@qty %> </font>
+    <font class=negText> $<%= @av_price*@qty %> </font>
   <% else %>
-    <font color="gray"> <%= @av_price*@qty %> </font>
+    <font class=neutText> $<%= @av_price*@qty %> </font>
   <% end %>
 </p>
 
 <p>
   Your Current Balance:
-  <%= current_user.balance %>
+  $<%= current_user.balance %>
 </p>
 
 <p>
   Approximate Balance After Transaction:
-  <%= current_user.balance+@av_price*@qty %>
+  $<%= current_user.balance+@av_price*@qty %>
 </p>
 
 <p>

@@ -2,10 +2,11 @@
   <div class="overlay">
     <div class="centerbox">
       <p class="centerbox-text">Buy and view stocks intuitively with Stock Portfolio®. Buying stocks has
-        never been easier! View stocks color coded based on recent performance. Our transaction log
-        makes it easier than ever to view your trading history. </p>
-      <%= link_to "Login", new_user_session_path, method: :get, id: "nlink" %>
-      <%= link_to "Register", new_user_registration_path, method: :get, id: "nlink" %>
+        never been easier! View stocks color coded based on recent performance and examine your
+        trading history with an organized transaction log. </p>
+      <p class="centerbox-text"> Want to get started?
+        <%= link_to "Log in", new_user_session_path, id: "boxlink" %> or
+        <%= link_to "register.", new_user_registration_path, id: "boxlink" %></p>
     </div>
   </div>
 </header>

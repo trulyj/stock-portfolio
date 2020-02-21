@@ -2,63 +2,11 @@
 @import "bootstrap";
 
 $lavender: #f0e3ff;
-$light-purple: #d89cf6;
-$medium-purple: #916dd5;
+$pink-purple: #d89cf6;
+$light-purple: #916dd5;
 $dark-purple: #3e206d;
 
 /* universal */
-
-html, header{height:100%;}
-
-header {
-  background: url("piggy-bank.jpg");
-  background-size: cover;
-  background-position: center;
-  position: fixed;
-  min-height: 100%;
-  min-width: 100%;
-  left: 0;
-  top: 0;
-}
-
-.centerbox {
-  width: 400px;
-	height: 200px;
-	//background-color: $light-purple;
-
-	position: absolute;
-	top:0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-
-	margin: auto;
-}
-
-.centerbox-text {
-  font-size: 1.1em;
-  line-height: 1.7em;
-  margin-bottom: 10px;
-  color: $lavender;
-  text-align: center;
-}
-
-//.centerbox-link {
-//  margin-right: 1em !important;
-//  color: $light-purple;
-//  //cursor: pointer;
-//}
-
-.overlay {
-  position: absolute;
-  min-height: 100%;
-  min-width: 100%;
-  left: 0;
-  top: 0;
-  background: rgba(0, 0, 0, 0.4);
-}
-
-html,body { height: 100%; }
 
 body {
   padding-top: 60px;
@@ -93,13 +41,77 @@ img {
   padding-bottom: 30px;
 }
 
+/* homepage */
+
+html, header{height:100%;}
+
+// background image
+header {
+  background: url("piggy-bank-2.jpg");
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  min-height: 100%;
+  min-width: 100%;
+  left: 0;
+  top: 0;
+}
+
+// formatting for text in the center of homepage
+.centerbox {
+  width: 400px;
+	height: 200px;
+	//background-color: $light-purple;
+
+	position: absolute;
+	top:0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	margin: auto;
+}
+
+.centerbox-text {
+  font-size: 1.1em;
+  line-height: 1.7em;
+  margin-bottom: 10px;
+  color: $lavender;
+  text-align: center;
+}
+
+// link to login, register on homepage
+#boxlink {
+  //float: left;
+  //margin-right: 10px;
+  font-size: 1em;
+  color: $light-purple;
+  //text-transform: uppercase;
+  letter-spacing: 0px;
+  word-spacing: 4px;
+  padding-top: 12px;
+  //font-weight: 300;
+}
+
+// overlay to make background image darker
+.overlay {
+  position: absolute;
+  min-height: 100%;
+  min-width: 100%;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+html,body { height: 100%; }
+
 /*--- navigation bar ---*/
 .navbar {
   background: $dark-purple;
 }
 .nav-link {
   margin-right: 1em !important;
-  color: $light-purple;
+  color: $pink-purple;
   //cursor: pointer;
 }
 
@@ -111,15 +123,10 @@ img {
 .nav-item:hover {
   color: $light-purple;
 }
-//.nav-link {
-//  margin-right: 1em !important;
-//}
+
 .nav-link:hover {
   color: $lavender;
 }
-//.navbar-collapse {
-//  justify-content: flex-end;
-//}
 
 
 /* typography */
@@ -151,27 +158,30 @@ p {
   /* text-align: center; */
 }
 
+// green text for stocks going up in price
 .posText {
-  font-size: 1.1em;
+  //font-size: 1.1em;
   line-height: 1.7em;
   margin-bottom: 10px;
-  color: green;
+  color: #00CC00;
   /* text-align: center; */
 }
 
+// red text for stocks going down in price
 .negText {
-  font-size: 1.1em;
+  //font-size: 1.1em;
   line-height: 1.7em;
   margin-bottom: 10px;
-  color: red;
+  color: #A02200;
   /* text-align: center; */
 }
 
+// gray text for unchanged stocks
 .neutText {
-  font-size: 1.1em;
+  //font-size: 1.1em;
   line-height: 1.7em;
   margin-bottom: 10px;
-  color: gray;
+  color: #555555;
   /* text-align: center; */
 }
 
@@ -219,13 +229,12 @@ table th, td {
   border-bottom: 1px solid $dark-purple;
 }
 
-//table tbody tr, td {
-//  background: $lavender;
-//}
-
+// every even row
 table tbody tr:nth-child(2n) td {
   background: $lavender;
 }
+
+// every odd row
 table tbody tr:nth-child(2n+1) td {
   background: #FFF;
 }
@@ -236,7 +245,7 @@ table tbody tr:nth-child(2n+1) td {
   float: left;
   margin-right: 10px;
   font-size: 1.7em;
-  color: $light-purple;
+  color: $pink-purple;
   text-transform: uppercase;
   letter-spacing: -1px;
   word-spacing: 4px;
@@ -254,7 +263,7 @@ table tbody tr:nth-child(2n+1) td {
   float: left;
   margin-right: 10px;
   font-size: 1em;
-  color: $light-purple;
+  color: $pink-purple;
   //text-transform: uppercase;
   letter-spacing: 0px;
   word-spacing: 4px;

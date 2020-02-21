@@ -23,30 +23,30 @@
 
 <p>
   <strong>Price per Share at Open:</strong>
-  <%= @stock.open_price %>
+  $<%= @stock.open_price %>
 </p>
 
 <p>
   <strong>Current Price per Share:</strong>
   <% if @stock.share_price > @stock.open_price %>
-    <font color="green"> <%= @stock.share_price %> </font>
+    <font class=posText> $<%= @stock.share_price %> </font>
   <% elsif @stock.share_price < @stock.open_price %>
-    <font color="red"> <%= @stock.share_price %> </font>
+    <font class=negText>  $<%= @stock.share_price %> </font>
   <% else %>
-    <font color="gray"> <%= @stock.share_price %> </font>
+    <font class=neutText>  $<%= @stock.share_price %> </font>
   <% end %>
 </p>
 
 <p>
   <strong>Current Total Price:</strong>
   <% if @stock.share_price > @stock.open_price %>
-    <font color="green"> <%= @stock.share_price*@stock.quantity %> </font>
+    <font class=posText>  $<%= @stock.share_price*@stock.quantity %> </font>
   <% elsif @stock.share_price < @stock.open_price %>
-    <font color="red"> <%= @stock.share_price*@stock.quantity %> </font>
+    <font class=negText>  $<%= @stock.share_price*@stock.quantity %> </font>
   <% else %>
-    <font color="gray"> <%= @stock.share_price*@stock.quantity %> </font>
+    <font class=neutText> $<%= @stock.share_price*@stock.quantity %> </font>
   <% end %>
 </p>
 
 <p> <%= link_to "Refresh Stock Data", stock_path, method: :put, id: @stock.id %> </p>
-<p> <%= link_to "Buy More Stocks", manage_path %></p>
+<p> <%= link_to "Back to Manage Stocks", manage_path %></p>
