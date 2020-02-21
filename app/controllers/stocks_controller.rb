@@ -231,7 +231,7 @@ class StocksController < ApplicationController
         endpoint: 'https://cloud.iexapis.com/v1'
       )
       #stock_quote = stk.quote
-      stock_quote = client.quote(params[:stock][:symbol])
+      stock_quote = client.quote(@stock.symbol)
       #av_price = (stock_quote.price).to_f
       #av_price = (stock_quote.open).to_f
       av_price = (stock_quote.latest_price).to_f
